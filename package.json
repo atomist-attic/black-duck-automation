@@ -1,0 +1,74 @@
+{
+  "name": "@atomist/black-duck-automation",
+  "version": "0.7.1",
+  "description": "Atomist automation seed project",
+  "author": "Atomist",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atomist/black-duck-automation.git"
+  },
+  "homepage": "https://github.com/atomist/black-duck-automation#readme",
+  "bugs": {
+    "url": "https://github.com/atomist/black-duck-automation/issues"
+  },
+  "keywords": [
+    "atomist",
+    "automation",
+    "seed"
+  ],
+  "dependencies": {
+    "@atomist/automation-client": "^0.6.6",
+    "app-root-path": "^2.0.1"
+  },
+  "devDependencies": {
+    "@types/app-root-path": "^1.2.4",
+    "@types/mocha": "^2.2.48",
+    "@types/node": "^9.4.1",
+    "@types/power-assert": "^1.4.29",
+    "copyfiles": "^1.2.0",
+    "espower-typescript": "^8.1.3",
+    "graphql-code-generator": "^0.8.14",
+    "mocha": "^5.0.0",
+    "nodemon": "^1.14.12",
+    "npm-run-all": "^4.1.2",
+    "power-assert": "^1.4.4",
+    "rimraf": "^2.6.2",
+    "supervisor": "^0.12.0",
+    "ts-node": "^4.1.0",
+    "tslint": "^5.9.1",
+    "typedoc": "^0.10.0",
+    "typescript": "^2.7.1",
+    "typescript-formatter": "^7.0.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "autostart": "nodemon --watch src --ext ts --exec ts-node -- node_modules/@atomist/automation-client/start.client.js",
+    "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
+    "build": "npm-run-all lint compile test typedoc",
+    "clean": "npm-run-all clean:js clean:build",
+    "clean:build": "rimraf *-v8.log profile.txt build",
+    "clean:dist": "npm-run-all clean clean:npm",
+    "clean:js": "rimraf \"{src,test}/**/*.js\"",
+    "clean:npm": "rimraf node_modules",
+    "compile": "npm-run-all git:info compile:gql compile:ts",
+    "compile:gql": "npm-run-all gql:gen gql:copy",
+    "compile:ts": "tsc --project .",
+    "fmt": "tsfmt --replace",
+    "git:info": "atomist git",
+    "gql:copy": "copyfiles \"src/**/*.graphql\" build",
+    "gql:gen": "atomist gql-gen \"{graphql,src}/**/*.graphql\"",
+    "lint": "tslint --format verbose --project . --exclude \"{build,node_modules}/**\" \"**/*.ts\"",
+    "lint:fix": "npm run lint -- --fix",
+    "start": "atomist start --no-install --no-compile",
+    "test": "mocha --require espower-typescript/guess \"test/**/*.ts\"",
+    "test:one": "mocha --require espower-typescript/guess \"test/**/${TEST:-*.ts}\"",
+    "typedoc": "typedoc --mode modules --excludeExternals --out build/typedoc src"
+  },
+  "engines": {
+    "node": "9.x.x",
+    "npm": "5.x.x"
+  }
+}

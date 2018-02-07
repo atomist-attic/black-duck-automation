@@ -19,7 +19,9 @@
   ],
   "dependencies": {
     "@atomist/automation-client": "^0.6.6",
-    "app-root-path": "^2.0.1"
+    "app-root-path": "^2.0.1",
+    "axios-mock-adapter": "^1.13.1",
+    "properties": "^1.2.1"
   },
   "devDependencies": {
     "@types/app-root-path": "^1.2.4",

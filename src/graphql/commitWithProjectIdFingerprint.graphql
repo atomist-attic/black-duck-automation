@@ -1,0 +1,9 @@
+subscription CommitWithProjectIdFingerprint {
+  Commit {
+    sha
+    repo {
+      name
+      owner
+    }
+  }
+}

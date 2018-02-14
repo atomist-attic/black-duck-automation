@@ -7,15 +7,13 @@ import MockAdapter = require("axios-mock-adapter");
 import { EventFired } from "@atomist/automation-client/Handlers";
 
 import {IdentifyProjectOnCommit} from "../../src/events/IdentifyProjectOnCommit";
-import {CommitWithProjectIdFingerprint} from "../../src/typings/types";
+import {Commit} from "../../src/typings/types";
 import {ProjectProperties} from "../../src/util/ProjectPropertiesExtractor";
 
 describe("IdentifyProjectOnCommit", () => {
 
     const handler = new class extends IdentifyProjectOnCommit {
-        public teamId = "team123";
-
-        protected getProjectProperties(repo: CommitWithProjectIdFingerprint.Repo, sha: string):
+        protected getProjectProperties(repo: Commit.Repo, sha: string):
                 Promise<ProjectProperties> {
             return Promise.resolve({
                 group: "atomist",
@@ -36,7 +34,7 @@ describe("IdentifyProjectOnCommit", () => {
                     },
                 }],
             },
-        } as EventFired<CommitWithProjectIdFingerprint.Subscription>;
+        } as EventFired<Commit.Subscription>;
 
         const mock = new MockAdapter(axios);
         mock.onPost(`http://webhook.atomist.com/atomist/fingerprints/teams/team123`)
@@ -63,8 +61,8 @@ describe("IdentifyProjectOnCommit", () => {
                 return [200];
             });
 
-        handler.handle(event, undefined)
-            .then(() => { done(); }, done);
+        handler.handle(event, { teamId: "team123"})
+            .then(() => done(), done);
     });
 
 });

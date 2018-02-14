@@ -1,4 +1,4 @@
-subscription CommitWithProjectIdFingerprint {
+subscription Commit {
   Commit {
     sha
     repo {

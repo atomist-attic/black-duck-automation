@@ -13,7 +13,6 @@ import {BlackDuckStatus} from "../../src/typings/types";
 describe("RetrieveBlackDuckRiskProfileOnStatus", () => {
 
     const handler = new class extends RetrieveBlackDuckRiskProfileOnStatus {
-        public teamId = "team123";
 
         protected blackDuckRiskProfile(url: string, projectName: string, projectVersion: string): Promise<RiskProfile> {
             return Promise.resolve({
@@ -83,8 +82,8 @@ describe("RetrieveBlackDuckRiskProfileOnStatus", () => {
                 return [200];
             });
 
-        handler.handle(event, undefined)
-            .then(() => { done(); }, done);
+        handler.handle(event, { teamId: "team123"})
+            .then(() => done(), done);
     });
 
 });

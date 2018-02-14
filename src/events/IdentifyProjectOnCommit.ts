@@ -1,13 +1,11 @@
 import {
     EventFired,
     EventHandler,
-    failure,
     GraphQL,
     HandleEvent,
     HandlerContext,
     HandlerResult,
-    logger, MappedParameter, MappedParameters, Secret, Secrets,
-    Success,
+    logger, Secret, Secrets,
     success,
     Tags,
 } from "@atomist/automation-client";
@@ -19,25 +17,21 @@ import * as graphql from "../typings/types";
 import {ProjectProperties, ProjectPropertiesExtractor} from "../util/ProjectPropertiesExtractor";
 
 @EventHandler("fingerprint a commit with project identification",
-    GraphQL.subscriptionFromFile("../graphql/commitWithProjectIdFingerprint", __dirname))
+    GraphQL.subscriptionFromFile("../graphql/commit", __dirname))
 @Tags("blackDuck", "status")
 export class IdentifyProjectOnCommit implements
-    HandleEvent<graphql.CommitWithProjectIdFingerprint.Subscription> {
+    HandleEvent<graphql.Commit.Subscription> {
 
-    @Secret(Secrets.userToken("repo"))
+    @Secret(Secrets.OrgToken)
     public githubToken: string;
 
-    @MappedParameter(MappedParameters.SlackTeam)
-    public teamId: string;
-
-    public handle(e: EventFired<graphql.CommitWithProjectIdFingerprint.Subscription>, ctx: HandlerContext):
+    public handle(e: EventFired<graphql.Commit.Subscription>, ctx: HandlerContext):
             Promise<HandlerResult> {
-        logger.debug(`incoming event is ${JSON.stringify(e.data)}`);
         const commit = e.data.Commit[0];
         const repo = commit.repo;
         const sha = commit.sha;
         return this.getProjectProperties(repo, sha).then(projectProperties => {
-            const atomistWebhook = `http://webhook.atomist.com/atomist/fingerprints/teams/${this.teamId}`;
+            const atomistWebhook = `http://webhook.atomist.com/atomist/fingerprints/teams/${ctx.teamId}`;
             const fingerprint = {
                 commit: {
                     provider: "https://www.github.com",
@@ -61,7 +55,7 @@ export class IdentifyProjectOnCommit implements
         });
     }
 
-    protected getProjectProperties(repo: graphql.CommitWithProjectIdFingerprint.Repo, sha: string):
+    protected getProjectProperties(repo: graphql.Commit.Repo, sha: string):
             Promise<ProjectProperties> {
         return GitCommandGitProject.cloned(
             { token: this.githubToken },

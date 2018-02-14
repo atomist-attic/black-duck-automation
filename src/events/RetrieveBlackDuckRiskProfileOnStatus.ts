@@ -13,9 +13,9 @@ import {
 } from "@atomist/automation-client";
 import axios from "axios";
 
+import {configuration} from "../atomist.config";
 import {BlackDuckService, RiskProfile} from "../blackDuck/BlackDuckService";
 import * as graphql from "../typings/types";
-import {configuration} from "../atomist.config";
 
 @EventHandler("retrieve Black Duck risk profile when there is a status",
     GraphQL.subscriptionFromFile("../graphql/blackDuckStatus", __dirname))

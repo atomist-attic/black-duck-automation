@@ -24,7 +24,6 @@ const token = process.env.GITHUB_TOKEN;
 const team = process.env.ATOMIST_TEAM;
 const teamIds = (team) ? [team] : [];
 
-
 const blackDuckUser = process.env.BLACK_DUCK_USER;
 const blackDuckPassword = process.env.BLACK_DUCK_PASSWORD;
 

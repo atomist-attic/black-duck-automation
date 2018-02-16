@@ -37,7 +37,7 @@ describe("IdentifyProjectOnCommit", () => {
         } as EventFired<Commit.Subscription>;
 
         const mock = new MockAdapter(axios);
-        mock.onPost(`http://webhook.atomist.com/atomist/fingerprints/teams/team123`)
+        mock.onPost(`https://webhook.atomist.com/atomist/fingerprints/teams/team123`)
             .replyOnce(config => {
                 const expectedRequest = {
                     commit: {
@@ -55,13 +55,22 @@ describe("IdentifyProjectOnCommit", () => {
                             name: "p1",
                             version: "1.0.3",
                         },
+                        value: {
+                            group: "atomist",
+                            name: "p1",
+                            version: "1.0.3",
+                        },
                     }],
                 };
                 assert.deepEqual(JSON.parse(config.data), expectedRequest);
                 return [200];
             });
 
-        handler.handle(event, { teamId: "team123"})
+        handler.handle(event, {
+            teamId: "team123",
+            messageClient: undefined,
+            correlationId: undefined,
+        })
             .then(() => done(), done);
     });
 

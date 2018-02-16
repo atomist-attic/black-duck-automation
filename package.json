@@ -50,6 +50,7 @@
     "autostart": "nodemon --watch src --ext ts --exec ts-node -- node_modules/@atomist/automation-client/start.client.js",
     "autotest": "supervisor --watch src,test --extensions ts --no-restart-on exit --quiet --exec npm -- test",
     "build": "npm-run-all lint compile test typedoc",
+    "debug": "node $NODE_DEBUG_OPTION --trace-warnings node_modules/@atomist/automation-client/start.client.js",
     "clean": "npm-run-all clean:js clean:build",
     "clean:build": "rimraf *-v8.log profile.txt build",
     "clean:dist": "npm-run-all clean clean:npm",

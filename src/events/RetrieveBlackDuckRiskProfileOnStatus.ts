@@ -26,6 +26,7 @@ export class RetrieveBlackDuckRiskProfileOnStatus implements HandleEvent<graphql
     public blackDuckPassword: string = configuration.blackDuck.password;
 
     public handle(e: EventFired<graphql.BlackDuckStatus.Subscription>, ctx: HandlerContext): Promise<HandlerResult> {
+        logger.debug(`incoming event is ${JSON.stringify(e.data)}`);
         const blackDuckStatus = e.data.Status[0];
         const blackDuckUrl = blackDuckStatus.targetUrl;
         const repo = blackDuckStatus.commit.repo;
@@ -35,7 +36,7 @@ export class RetrieveBlackDuckRiskProfileOnStatus implements HandleEvent<graphql
         const projectIdFpData = JSON.parse(projectIdFp.data);
         const projectName = projectIdFpData.name;
         const projectVersion = projectIdFpData.version;
-        const atomistWebhook = `http://webhook.atomist.com/atomist/fingerprints/teams/${ctx.teamId}`;
+        const atomistWebhook = `https://webhook.atomist.com/atomist/fingerprints/teams/${ctx.teamId}`;
         return this.blackDuckRiskProfile(blackDuckUrl, projectName, projectVersion)
             .then(riskProfile => {
                 const fingerprint = {
@@ -52,6 +53,7 @@ export class RetrieveBlackDuckRiskProfileOnStatus implements HandleEvent<graphql
                             // sha: "",
                             abbrevation: "bdrp",
                             data: riskProfile,
+                            value: riskProfile,
                         },
                     ],
                 };

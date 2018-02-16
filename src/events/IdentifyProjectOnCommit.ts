@@ -27,11 +27,12 @@ export class IdentifyProjectOnCommit implements
 
     public handle(e: EventFired<graphql.Commit.Subscription>, ctx: HandlerContext):
             Promise<HandlerResult> {
+        logger.debug(`incoming event is ${JSON.stringify(e.data)}`);
         const commit = e.data.Commit[0];
         const repo = commit.repo;
         const sha = commit.sha;
         return this.getProjectProperties(repo, sha).then(projectProperties => {
-            const atomistWebhook = `http://webhook.atomist.com/atomist/fingerprints/teams/${ctx.teamId}`;
+            const atomistWebhook = `https://webhook.atomist.com/atomist/fingerprints/teams/${ctx.teamId}`;
             const fingerprint = {
                 commit: {
                     provider: "https://www.github.com",
@@ -46,6 +47,7 @@ export class IdentifyProjectOnCommit implements
                         // sha: "",
                         abbrevation: "prid",
                         data: projectProperties,
+                        value: projectProperties,
                     },
                 ],
             };

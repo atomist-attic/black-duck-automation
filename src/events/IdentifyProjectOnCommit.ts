@@ -11,6 +11,8 @@ import {
 } from "@atomist/automation-client";
 import axios from "axios";
 
+import { doWithRetry } from "@atomist/automation-client/util/retry";
+
 import {GitHubRepoRef} from "@atomist/automation-client/operations/common/GitHubRepoRef";
 import {GitCommandGitProject} from "@atomist/automation-client/project/git/GitCommandGitProject";
 import * as graphql from "../typings/types";
@@ -51,7 +53,12 @@ export class IdentifyProjectOnCommit implements
                     },
                 ],
             };
-            return axios.post(atomistWebhook, fingerprint);
+            return doWithRetry(() => axios.post(atomistWebhook, fingerprint),
+                `send project ID fingerprint`,
+                {
+                    minTimeout: 500,
+                    retries: 5,
+                });
         }).then(result => {
             return success();
         });

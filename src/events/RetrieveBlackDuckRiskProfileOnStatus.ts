@@ -13,6 +13,8 @@ import {
 } from "@atomist/automation-client";
 import axios from "axios";
 
+import { doWithRetry } from "@atomist/automation-client/util/retry";
+
 import {configuration} from "../atomist.config";
 import {BlackDuckService, RiskProfile} from "../blackDuck/BlackDuckService";
 import * as graphql from "../typings/types";
@@ -57,7 +59,12 @@ export class RetrieveBlackDuckRiskProfileOnStatus implements HandleEvent<graphql
                         },
                     ],
                 };
-                return axios.post(atomistWebhook, fingerprint);
+                return doWithRetry(() => axios.post(atomistWebhook, fingerprint),
+                    `send Black Duck risk profile fingerprint`,
+                    {
+                        minTimeout: 500,
+                        retries: 5,
+                    });
             }).then(result => {
                 return success();
             });

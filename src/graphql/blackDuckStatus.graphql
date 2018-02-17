@@ -1,0 +1,20 @@
+subscription BlackDuckStatus {
+  Status (context: "black-duck/hub-detect") {
+    context
+    state
+    targetUrl
+    commit {
+      sha
+      timestamp
+      fingerprints (name: "ProjectIdentification") {
+        name
+        data
+      }
+      repo {
+        owner
+        name
+      }
+    }
+    timestamp
+  }
+}

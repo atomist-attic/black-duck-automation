@@ -1,0 +1,20 @@
+subscription ProjectIdFingerprint {
+  Fingerprint (name: "ProjectIdentification") {
+    name
+    data
+    commit {
+      sha
+      timestamp
+      statuses (context: "black-duck/hub-detect") {
+        context
+        state
+        targetUrl
+        timestamp
+      }
+      repo {
+        owner
+        name
+      }
+    }
+  }
+}

@@ -24,12 +24,19 @@ const token = process.env.GITHUB_TOKEN;
 const team = process.env.ATOMIST_TEAM;
 const teamIds = (team) ? [team] : [];
 
-export const configuration: Configuration = {
+const blackDuckUser = process.env.BLACK_DUCK_USER;
+const blackDuckPassword = process.env.BLACK_DUCK_PASSWORD;
+
+export const configuration: any = {
     name: pj.name,
     version: pj.version,
-    keywords: ["atomist", "seed"],
+    keywords: ["atomist", "black duck"],
     teamIds,
     token,
+    blackDuck: {
+        user: blackDuckUser,
+        password: blackDuckPassword,
+    },
     http: {
         enabled: true,
         auth: {

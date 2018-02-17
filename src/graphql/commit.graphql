@@ -1,0 +1,9 @@
+subscription Commit {
+  Commit {
+    sha
+    repo {
+      name
+      owner
+    }
+  }
+}

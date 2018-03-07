@@ -3,6 +3,7 @@ subscription BlackDuckStatus {
     context
     state
     targetUrl
+    description
     commit {
       sha
       timestamp

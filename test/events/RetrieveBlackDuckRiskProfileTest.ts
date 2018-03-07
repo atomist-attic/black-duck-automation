@@ -15,6 +15,18 @@ describe("RetrieveBlackDuckRiskProfile", () => {
         targetUrl: "http://bdHub.com",
     };
 
+    const statusWithDesc = {
+        context: "black-duck/hub-detect",
+        targetUrl: "http://bdHub.com",
+        description: "black duck hub detect ran",
+    };
+
+    const statusWithOverrides = {
+        context: "black-duck/hub-detect",
+        targetUrl: "http://bdHub.com",
+        description: `{ "name": "p2", "version": "2.0.0" }`,
+    };
+
     const fingerprint = {
         name: "ProjectIdentification",
         data: `{
@@ -26,7 +38,6 @@ describe("RetrieveBlackDuckRiskProfile", () => {
 
     it("should find risk profile and send fingerprint", done => {
         const retriever = new class extends RetrieveBlackDuckRiskProfile {
-
             protected blackDuckRiskProfile(url: string, projectName: string, projectVersion: string):
                     Promise<RiskProfile> {
                 return Promise.resolve({
@@ -86,35 +97,78 @@ describe("RetrieveBlackDuckRiskProfile", () => {
             .then(() => done(), done);
     });
 
+    it("should find risk profile and send fingerprint ignoring status description", done => {
+        const retriever = new class extends RetrieveBlackDuckRiskProfile {
+            protected blackDuckRiskProfile(url: string, projectName: string, projectVersion: string):
+            Promise<RiskProfile> {
+                assert.deepEqual(projectName, "p1");
+                assert.deepEqual(projectVersion, "1.0.3");
+                return Promise.resolve({
+                    categories: [],
+                } as RiskProfile);
+            }
+        }({
+            name: "project1",
+            owner: "atomisthq",
+        }, "team123");
+
+        const mock = new MockAdapter(axios);
+        mock.onPost(`https://webhook.atomist.com/atomist/fingerprints/teams/team123`)
+            .replyOnce(config => {
+                return [200];
+            });
+
+        retriever.retrieve(statusWithDesc, fingerprint, "123")
+            .then(() => done(), done);
+    });
+
+    it("should find risk profile and send fingerprint with overrides", done => {
+        const retriever = new class extends RetrieveBlackDuckRiskProfile {
+            protected blackDuckRiskProfile(url: string, projectName: string, projectVersion: string):
+            Promise<RiskProfile> {
+                assert.deepEqual(projectName, "p2");
+                assert.deepEqual(projectVersion, "2.0.0");
+                return Promise.resolve({
+                    categories: [],
+                } as RiskProfile);
+            }
+        }({
+            name: "project1",
+            owner: "atomisthq",
+        }, "team123");
+
+        const mock = new MockAdapter(axios);
+        mock.onPost(`https://webhook.atomist.com/atomist/fingerprints/teams/team123`)
+            .replyOnce(config => {
+                return [200];
+            });
+
+        retriever.retrieve(statusWithOverrides, fingerprint, "123")
+            .then(() => done(), done);
+    });
+
     it("should not access risk profile if fingerprint is missing", done => {
         const retriever = new class extends RetrieveBlackDuckRiskProfile {
             protected blackDuckRiskProfile(url: string, projectName: string, projectVersion: string):
                     Promise<RiskProfile> {
-                fail("should not access risk profile if fingerprint is missing");
-                return undefined;
+                assert.deepEqual(projectName, "p2");
+                assert.deepEqual(projectVersion, "2.0.0");
+                return Promise.resolve({
+                    categories: [],
+                } as RiskProfile);
             }
         }({
             name: "project1",
             owner: "atomisthq",
         }, "team123");
 
-        retriever.retrieve(status, undefined, "123")
-            .then(() => done(), done);
-    });
+        const mock = new MockAdapter(axios);
+        mock.onPost(`https://webhook.atomist.com/atomist/fingerprints/teams/team123`)
+            .replyOnce(config => {
+                return [200];
+            });
 
-    it("should not access risk profile if status is missing", done => {
-        const retriever = new class extends RetrieveBlackDuckRiskProfile {
-            protected blackDuckRiskProfile(url: string, projectName: string, projectVersion: string):
-                    Promise<RiskProfile> {
-                fail("should not access risk profile if fingerprint is missing");
-                return undefined;
-            }
-        }({
-            name: "project1",
-            owner: "atomisthq",
-        }, "team123");
-
-        retriever.retrieve(undefined, fingerprint, "123")
+        retriever.retrieve(statusWithOverrides, undefined, "123")
             .then(() => done(), done);
     });
 

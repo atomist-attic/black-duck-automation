@@ -17,11 +17,20 @@ export class RetrieveBlackDuckRiskProfile {
     constructor(private repo: Repo, private teamId: string) {}
 
     public retrieve(blackDuckStatus: Status, projectIdFp: Fingerprints, sha: string): Promise<any> {
-        if (!blackDuckStatus || !projectIdFp) { return Promise.resolve(undefined); }
         const blackDuckUrl = blackDuckStatus.targetUrl;
-        const projectIdFpData = JSON.parse(projectIdFp.data);
-        const projectName = projectIdFpData.name;
-        const projectVersion = projectIdFpData.version;
+        let projectName;
+        let projectVersion;
+        try {
+            const projectId = JSON.parse(blackDuckStatus.description);
+            projectName = projectId.name;
+            projectVersion = projectId.version;
+        } catch (e) {
+            if (projectIdFp) {
+                const projectId = JSON.parse(projectIdFp.data);
+                projectName = projectId.name;
+                projectVersion = projectId.version;
+            }
+        }
         const atomistWebhook = `https://webhook.atomist.com/atomist/fingerprints/teams/${this.teamId}`;
         return this.blackDuckRiskProfile(blackDuckUrl, projectName, projectVersion)
             .then(riskProfile => {

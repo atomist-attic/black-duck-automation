@@ -1,19 +1,34 @@
-# @atomist/automation-seed
+# @atomist/black-duck-automation
 
-[![npm version](https://badge.fury.io/js/%40atomist%2Fautomation-seed.svg)](https://badge.fury.io/js/%40atomist%2Fautomation-seed)
-[![Build Status](https://travis-ci.org/atomist/automation-seed-ts.svg?branch=master)](https://travis-ci.org/atomist/automation-seed-ts)
+[![Build Status](https://travis-ci.org/atomist/black-duck-automation.svg?branch=master)](https://travis-ci.org/atomist/black-duck-automation)
 
-This repository contains examples demonstrating use of
-the [Atomist][atomist] API.  You will find examples illustrating:
+This automates integration with Black Duck.
 
--   Creating bot commands using _command handlers_
--   Responding to DevOps events, e.g., commits pushed to a repository,
-    using _event handlers_
+Currently it attaches Black Duck risk profiles to the commits that were analyzed. To trigger this attach the proper GitHub status to the commit after running hub detect.
+For example, if you run hub detect as a post build task in Circle CI, then execute this curl next.
 
-These examples use the [`@atomist/automation-client`][client] node
-module to implement a local client that connects to the Atomist API.
+```
+curl -X POST \
+'https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/statuses/$CIRCLE_SHA1?access_token=<token with at least repo:status>' \
+-d '{
+"state": "success",
+"target_url": "https://bd-hub.bestegg.com",
+"context": "black-duck/hub-detect"
+}'
+```
 
-[client]: https://github.com/atomist/automation-client-ts (@atomist/automation-client Node Module)
+By default we will access the risk profile using the project name and version defined in the Gradle build. You can override these values in the description field.
+
+```
+curl -X POST \
+'https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/statuses/$CIRCLE_SHA1?access_token=<token with at least repo:status>' \
+-d '{
+"state": "success",
+"target_url": "https://bd-hub.bestegg.com",
+"description": "{ \"name\": \"p2\", \"version\": \"2.0.0\" }",
+"context": "black-duck/hub-detect"
+}'
+```
 
 ## Prerequisites
 
@@ -168,63 +183,6 @@ $ kubectl create -f automation-seed-deployment.json
 ```
 
 [latest]: https://github.com/atomist/automation-seed-ts/releases/latest
-
-## Invoking a command handler from Slack
-
-This project contains the code to create and respond to a simple
-`hello world` bot command.  The code that defines the bot command and
-implements responding to the command, i.e., the _command handler_, can
-be found in [`HelloWorld.ts`][hello].  Once you have your local
-automation client running (the previous step in this guide), you can
-invoke the command handler by sending the Atomist bot the command as a
-message.  Be sure the Atomist bot is in the channel before sending it
-the message.
-
-```
-/invite @atomist
-@atomist hello world
-```
-
-Once you've submitted the command in Slack, you'll see the incoming
-and outgoing messages show up in the logs of your locally running
-automation-client.  Ultimately, you should see the response from the
-bot in Slack.
-
-[hello]: https://github.com/atomist/automation-seed-ts/blob/master/src/commands/HelloWorld.ts (HelloWorld Command Handler)
-
-Feel free to modify the code in the `HelloWorld` command handler,
-Node.js will automatically reload the client, and see what happens!
-
-## Triggering an event handler
-
-While command handlers respond to commands you send the Atomist bot,
-_event handlers_ take action when different types of events occur in
-your development and operations environment.  Some examples of events
-are commits pushed to a repo, or a CI build that fails, or an instance
-of a running service that becomes unhealthy.  Example responses to those
-events are showing the commits in a Slack message, automatically
-restarting the build, and triggering a PagerDuty alert, respectively.
-
-The sample event handler in this project, [NotifyOnPush][nop-handler],
-will notice when someone pushes new commits to a repository in the
-GitHub organization and send a notice of that push to all Slack
-channels associated with that repository.
-
-If you have followed the instructions above and are running these
-automations against the atomist-playground Slack team and GitHub
-organization, go ahead and edit the [notify-on-push][nop-repo]
-repository by adding some text to its [README][nop-readme].  Once you
-have saved your changes, you should see that event appear in the
-console logs of your locally running automation client, followed by a
-log of the actions the event handler is taking.  Once those actions
-are complete, you should see a new message in the
-[`#notify-on-push`][nop-channel] channel in the atomist-playground
-Slack team.
-
-[nop-handler]: https://github.com/atomist/automation-seed-ts/blob/master/src/events/NotifyOnPush.ts (Atomist NotifyOnPush Event Handler)
-[nop-repo]: https://github.com/atomist-playground/notify-on-push (Atomist NotifyOnPush Repository)
-[nop-readme]: https://github.com/atomist-playground/notify-on-push/edit/master/README.md (Edit NotifyOnPush README)
-[nop-channel]: https://atomist-playground.slack.com/messages/C7GNF6743/ (NotifyOnPush Slack Channel)
 
 ## Support
 

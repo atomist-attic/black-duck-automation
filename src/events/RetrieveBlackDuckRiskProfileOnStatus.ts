@@ -10,7 +10,7 @@ import {
     Tags,
 } from "@atomist/automation-client";
 import * as graphql from "../typings/types";
-import {RetrieveBlackDuckRiskProfile} from "./RetrieveBlackDuckRiskProfile";
+import { RetrieveBlackDuckRiskProfile } from "./RetrieveBlackDuckRiskProfile";
 
 @EventHandler("retrieve Black Duck risk profile when there is a status",
     GraphQL.subscriptionFromFile("../graphql/blackDuckStatus", __dirname))

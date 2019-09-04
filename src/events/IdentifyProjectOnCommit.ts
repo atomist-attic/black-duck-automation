@@ -5,7 +5,9 @@ import {
     HandleEvent,
     HandlerContext,
     HandlerResult,
-    logger, Secret, Secrets,
+    logger,
+    Secret,
+    Secrets,
     success,
     Tags,
 } from "@atomist/automation-client";
@@ -13,10 +15,13 @@ import axios from "axios";
 
 import { doWithRetry } from "@atomist/automation-client/util/retry";
 
-import {GitHubRepoRef} from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import {GitCommandGitProject} from "@atomist/automation-client/project/git/GitCommandGitProject";
+import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
 import * as graphql from "../typings/types";
-import {ProjectProperties, ProjectPropertiesExtractor} from "../util/ProjectPropertiesExtractor";
+import {
+    ProjectProperties,
+    ProjectPropertiesExtractor,
+} from "../util/ProjectPropertiesExtractor";
 
 @EventHandler("fingerprint a commit with project identification",
     GraphQL.subscriptionFromFile("../graphql/commit", __dirname))

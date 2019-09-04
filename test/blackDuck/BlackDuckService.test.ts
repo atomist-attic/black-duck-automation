@@ -6,7 +6,7 @@ import MockAdapter from "axios-mock-adapter";
 
 import { LoggingConfig } from "@atomist/automation-client/internal/util/logger";
 
-import {BlackDuckService} from "../../src/blackDuck/BlackDuckService";
+import { BlackDuckService } from "../../src/blackDuck/BlackDuckService";
 
 LoggingConfig.format = "cli";
 

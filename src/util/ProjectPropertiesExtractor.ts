@@ -1,5 +1,5 @@
 
-import {LocalProject} from "@atomist/automation-client/project/local/LocalProject";
+import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
 import * as child_process from "child_process";
 import * as properties from "properties";
 

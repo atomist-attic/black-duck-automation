@@ -4,9 +4,9 @@ import * as assert from "power-assert";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 
-import {fail} from "power-assert";
-import {RiskProfile} from "../../src/blackDuck/BlackDuckService";
-import {RetrieveBlackDuckRiskProfile} from "../../src/events/RetrieveBlackDuckRiskProfile";
+import { fail } from "power-assert";
+import { RiskProfile } from "../../src/blackDuck/BlackDuckService";
+import { RetrieveBlackDuckRiskProfile } from "../../src/events/RetrieveBlackDuckRiskProfile";
 
 describe("RetrieveBlackDuckRiskProfile", () => {
 

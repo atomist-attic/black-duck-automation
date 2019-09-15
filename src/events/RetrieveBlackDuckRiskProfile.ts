@@ -3,9 +3,12 @@ import axios from "axios";
 
 import { doWithRetry } from "@atomist/automation-client/util/retry";
 
-import {configuration} from "../atomist.config";
-import {BlackDuckService, RiskProfile} from "../blackDuck/BlackDuckService";
-import {BlackDuckStatus} from "../typings/types";
+import { configuration } from "../atomist.config";
+import {
+    BlackDuckService,
+    RiskProfile,
+} from "../blackDuck/BlackDuckService";
+import { BlackDuckStatus } from "../typings/types";
 import Fingerprints = BlackDuckStatus.Fingerprints;
 import Status = BlackDuckStatus.Status;
 import Repo = BlackDuckStatus.Repo;

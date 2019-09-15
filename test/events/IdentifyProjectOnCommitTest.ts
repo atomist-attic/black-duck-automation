@@ -6,9 +6,9 @@ import MockAdapter from "axios-mock-adapter";
 
 import { EventFired } from "@atomist/automation-client/Handlers";
 
-import {IdentifyProjectOnCommit} from "../../src/events/IdentifyProjectOnCommit";
-import {Commit} from "../../src/typings/types";
-import {ProjectProperties} from "../../src/util/ProjectPropertiesExtractor";
+import { IdentifyProjectOnCommit } from "../../src/events/IdentifyProjectOnCommit";
+import { Commit } from "../../src/typings/types";
+import { ProjectProperties } from "../../src/util/ProjectPropertiesExtractor";
 
 describe("IdentifyProjectOnCommit", () => {
 

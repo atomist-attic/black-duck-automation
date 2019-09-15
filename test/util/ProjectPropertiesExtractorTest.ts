@@ -4,11 +4,11 @@ import * as assert from "power-assert";
 
 import { LoggingConfig } from "@atomist/automation-client/internal/util/logger";
 
-import {GitHubRepoRef} from "@atomist/automation-client/operations/common/GitHubRepoRef";
-import {GitCommandGitProject} from "@atomist/automation-client/project/git/GitCommandGitProject";
-import {LocalProject} from "@atomist/automation-client/project/local/LocalProject";
-import {InMemoryProject} from "@atomist/automation-client/project/mem/InMemoryProject";
-import {ProjectPropertiesExtractor} from "../../src/util/ProjectPropertiesExtractor";
+import { GitHubRepoRef } from "@atomist/automation-client/operations/common/GitHubRepoRef";
+import { GitCommandGitProject } from "@atomist/automation-client/project/git/GitCommandGitProject";
+import { LocalProject } from "@atomist/automation-client/project/local/LocalProject";
+import { InMemoryProject } from "@atomist/automation-client/project/mem/InMemoryProject";
+import { ProjectPropertiesExtractor } from "../../src/util/ProjectPropertiesExtractor";
 
 LoggingConfig.format = "cli";
 
